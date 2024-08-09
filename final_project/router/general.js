@@ -13,7 +13,15 @@ public_users.post("/register", (req,res) => {
 // Get the book list available in the shop
 public_users.get('/',function (req, res) {
   //Write your code here
-  return res.status(300).json({message: "Yet to be implemented"});
+  let arr = [];
+  Object.keys(books).forEach((key) => {
+    arr.push(books[key])
+  });
+
+
+  return res.status(200).json({
+    books: arr
+  });
 });
 
 // Get book details based on ISBN
