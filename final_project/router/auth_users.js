@@ -64,6 +64,21 @@ regd_users.put("/auth/review/:isbn", (req, res) => {
   return res.status(200).json({message: "Review added", book: books[k].reviews});
 });
 
+regd_users.delete("/auth/review/:isbn", (req, res) => {
+  const { isbn } = req.params;
+  const result = jwt.verify(req.body.token, 'fingerprint_customer');
+  const username = result.username;
+  
+  let k;
+  Object.keys(books).forEach((key) => {
+    if(books[key].isbn === Number(isbn)) {
+      delete books[key].reviews[username];
+      k = key;
+    }
+  });
+  return res.status(200).json({message: "Review deleted", book: books[k].reviews});
+});
+
 module.exports.authenticated = regd_users;
 module.exports.isValid = isValid;
 module.exports.users = users;
