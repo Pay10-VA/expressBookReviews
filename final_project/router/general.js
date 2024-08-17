@@ -77,8 +77,19 @@ public_users.get('/title/:title',function (req, res) {
 
 //  Get book review
 public_users.get('/review/:isbn',function (req, res) {
-  //Write your code here
-  return res.status(300).json({message: "Yet to be implemented"});
+  const isbn = req.params.isbn;
+  let k;
+  Object.keys(books).forEach((key) => {
+    if(books[key].isbn === Number(isbn)) {
+      console.log(key, k, isbn)
+      k = key;
+      return;
+    }
+  })
+  if(!k) {
+    return res.status(500).json({message: "No result found"});
+  }
+  return res.status(200).json({reviews: books[k].reviews});
 });
 
 module.exports.general = public_users;
