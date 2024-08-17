@@ -30,7 +30,7 @@ const authenticatedUser = (username,password)=>{ //returns boolean
 //only registered users can login
 regd_users.post("/login", async (req,res) => {
   //Write your code here
-  const privateKey = 'privateKey';
+  const privateKey = 'fingerprint_customer';
   const { username, password } = req.body;
   if(authenticatedUser(username, password)) {
     let token = await jwt.sign({ username, password }, privateKey);
@@ -44,15 +44,24 @@ regd_users.post("/login", async (req,res) => {
   else {
     return res.status(400).json({message: "Invalid credentials"});
   }
-
-
-  return res.status(300).json({message: "Yet to be implemented"});
 });
 
 // Add a book review
 regd_users.put("/auth/review/:isbn", (req, res) => {
+  const { review } = req.body;
+  const { isbn } = req.params;
+  const result = jwt.verify(req.body.token, 'fingerprint_customer');
+  const username = result.username;
+  
   //Write your code here
-  return res.status(300).json({message: "Yet to be implemented"});
+  let k;
+  Object.keys(books).forEach((key) => {
+    if(books[key].isbn === Number(isbn)) {
+      books[key].reviews[username] = review;
+      k = key;
+    }
+  });
+  return res.status(200).json({message: "Review added", book: books[k].reviews});
 });
 
 module.exports.authenticated = regd_users;
